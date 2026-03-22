@@ -16,18 +16,18 @@ export default function Page() {
         themeMode={resolvedTheme as "dark" | "light"}
         className="aspect-square size-32"
       />
-      <motion.div
+      {/* <motion.div
         animate={{ opacity: 1 }}
         initial={{ opacity: 0 }}
         transition={{ duration: 1 }}
-      >
+      > */}
         <div className="flex flex-col items-start justify-center gap-2">
           <p className="font-jetbrains-mono text-4xl font-extralight tracking-tight">
             pl
           </p>
           <p className="text-sm text-muted-foreground">coming soon</p>
         </div>
-      </motion.div>
+      {/* </motion.div> */}
     </div>
   )
 }
