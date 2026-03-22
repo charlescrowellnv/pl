@@ -1,19 +1,33 @@
-import { Button } from "@/components/ui/button"
+"use client"
+
+import { AgentAudioVisualizerAura } from "@/components/agents-ui/agent-audio-visualizer-aura"
+import { motion } from "framer-motion"
+import { useTheme } from "next-themes"
 
 export default function Page() {
+  const { resolvedTheme } = useTheme()
   return (
-    <div className="flex min-h-svh p-6">
-      <div className="flex max-w-md min-w-0 flex-col gap-4 text-sm leading-loose">
-        <div>
-          <h1 className="font-medium">Project ready!</h1>
-          <p>You may now add components and start building.</p>
-          <p>We&apos;ve already added the button component for you.</p>
-          <Button className="mt-2">Button</Button>
+    <div className="relative flex min-h-dvh w-full flex-row items-center justify-center gap-4">
+      <AgentAudioVisualizerAura
+        size="xl"
+        color="#1FD5F9"
+        colorShift={2}
+        state="listening"
+        themeMode={resolvedTheme as "dark" | "light"}
+        className="aspect-square size-32"
+      />
+      <motion.div
+        animate={{ opacity: 1 }}
+        initial={{ opacity: 0 }}
+        transition={{ duration: 1 }}
+      >
+        <div className="flex flex-col items-start justify-center gap-2">
+          <p className="font-jetbrains-mono text-4xl font-extralight tracking-tight">
+            pl
+          </p>
+          <p className="text-sm text-muted-foreground">coming soon</p>
         </div>
-        <div className="font-mono text-xs text-muted-foreground">
-          (Press <kbd>d</kbd> to toggle dark mode)
-        </div>
-      </div>
+      </motion.div>
     </div>
   )
 }
