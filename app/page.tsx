@@ -22,7 +22,7 @@ export default function Page() {
         transition={{ duration: 1 }}
       > */}
       <div className="flex flex-col items-start justify-center gap-2">
-        <p className="font-jetbrains-mono text-4xl font-extrabold tracking-tighter">
+        <p className="font-jetbrains-mono text-4xl font-bold tracking-tighter">
           pl
         </p>
         <p className="text-sm text-muted-foreground">coming soon</p>
