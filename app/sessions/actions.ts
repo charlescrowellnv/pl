@@ -37,6 +37,24 @@ export async function createSession(
   return { ok: true, data: { sessionId: data.id } }
 }
 
+export async function renameSession(
+  sessionId: string,
+  label: string
+): Promise<SessionActionResult> {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { ok: false, error: "Not authenticated" }
+
+  const { error } = await supabase
+    .from("sessions")
+    .update({ label: label.trim() || null })
+    .eq("id", sessionId)
+    .eq("user_id", user.id)
+
+  if (error) return { ok: false, error: error.message }
+  return { ok: true, data: undefined }
+}
+
 export async function completeSession(
   sessionId: string,
   conversationId: string,

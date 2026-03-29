@@ -5,6 +5,7 @@ import { getOnboardedUser } from "@/lib/supabase/get-user"
 import { createClient } from "@/lib/supabase/server"
 import { Badge } from "@/components/ui/badge"
 import { ScoreButton } from "@/components/sessions/score-button"
+import { SessionLabel } from "@/components/sessions/session-label"
 
 export default async function SessionDetailPage({
   params,
@@ -59,9 +60,11 @@ export default async function SessionDetailPage({
       {/* Header */}
       <div className="space-y-1">
         <div className="flex items-start justify-between gap-4">
-          <h1 className="text-2xl font-semibold">
-            {session.label ?? `Session — ${date}`}
-          </h1>
+          <SessionLabel
+            sessionId={session.id}
+            label={session.label}
+            fallback={`Session — ${date}`}
+          />
           <StatusBadge status={session.status} />
         </div>
         <p className="text-muted-foreground text-sm">
