@@ -51,7 +51,7 @@ export default function BigText({ text, className }: BigTextProps) {
     <div ref={containerRef} className={cn("w-full min-w-0", className)}>
       <p
         ref={textRef}
-        className="leading-none tracking-tighter whitespace-nowrap"
+        className="leading-none font-light tracking-tighter whitespace-nowrap"
         style={{
           fontSize: fontSizePx !== null ? `${fontSizePx}px` : undefined,
           visibility: fontSizePx !== null ? "visible" : "hidden",

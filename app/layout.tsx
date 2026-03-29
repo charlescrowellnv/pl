@@ -33,7 +33,7 @@ export default function RootLayout({
         inter.variable
       )}
     >
-      <body className="h-full min-h-dvh">
+      <body className="suppressHydrationWarning h-full min-h-dvh">
         <ThemeProvider>
           <TooltipProvider>{children}</TooltipProvider>
           <Toaster />
