@@ -16,18 +16,20 @@ export default function TestPage() {
 
       <main className="flex h-full flex-1 flex-col">
         <div className="mx-auto grid h-full w-full max-w-4xl grid-cols-1 border-r border-l md:grid-cols-2">
-          <div className="flex h-full flex-col items-center justify-center border-b px-24 shadow-xl md:border-r md:border-b-0">
-            <BigText text="Coming Soon" />
+          <div className="flex items-center justify-center border-b p-2 shadow-lg md:border-r md:border-b-0">
+            <span className="text-muted-foreground">Coming Soon</span>
           </div>
-          <div className="flex items-center justify-center bg-muted">
-            <AgentAudioVisualizerAura
-              size="lg"
-              color="#1FD5F9"
-              colorShift={2}
-              state="speaking"
-              themeMode={resolvedTheme === "dark" ? "dark" : "light"}
-              className="rounded-full"
-            />
+          <div className="flex items-center justify-center p-2">
+            <div className="flex items-center justify-center rounded-4xl border bg-white shadow-2xl dark:bg-black">
+              <AgentAudioVisualizerAura
+                size="lg"
+                color="#1FD5F9"
+                colorShift={2}
+                state="speaking"
+                themeMode={resolvedTheme === "dark" ? "dark" : "light"}
+                className="rounded-full"
+              />
+            </div>
           </div>
         </div>
       </main>
