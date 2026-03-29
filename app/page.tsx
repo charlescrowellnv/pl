@@ -2,7 +2,10 @@
 
 import { AgentAudioVisualizerAura } from "@/components/agents-ui/agent-audio-visualizer-aura"
 import BigText from "@/components/big-text"
+import { Button } from "@/components/ui/button"
+import { Separator } from "@/components/ui/separator"
 import { useTheme } from "next-themes"
+import Link from "next/link"
 
 export default function TestPage() {
   const { resolvedTheme } = useTheme()
@@ -10,7 +13,13 @@ export default function TestPage() {
     <div className="flex h-dvh flex-col overflow-hidden">
       <header className="h-16 border-b px-4">
         <div className="mx-auto flex h-full w-full max-w-4xl items-center justify-end">
-          <span className="text-muted-foreground">v0.1</span>
+          <div className="flex flex-row items-center gap-2">
+            <span className="text-sm text-muted-foreground">v0.1</span>
+            <Separator orientation="vertical" />
+            <Button asChild variant="outline" className="font-normal">
+              <Link href="/auth/login">dev login</Link>
+            </Button>
+          </div>
         </div>
       </header>
 
