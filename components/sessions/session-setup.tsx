@@ -280,10 +280,14 @@ export function SessionSetup({ scorecards, scenarios, orgId, userId }: Props) {
       <div className="space-y-2">
         <Label>Scorecard</Label>
         {scorecards.length === 0 ? (
-          <p className="text-muted-foreground text-sm">
-            No scorecards yet.{" "}
-            <a href="/scorecards/new" className="underline">Create one</a>.
-          </p>
+          <div className="rounded-lg border border-dashed p-4 space-y-1">
+            <p className="text-sm text-muted-foreground">No scorecards yet.</p>
+            <div className="flex gap-3 text-sm">
+              <a href="/scorecards" className="text-primary underline-offset-4 hover:underline">Browse templates</a>
+              <span className="text-muted-foreground">·</span>
+              <a href="/scorecards/new" className="text-primary underline-offset-4 hover:underline">Create from scratch</a>
+            </div>
+          </div>
         ) : (
           <>
             <Select value={scorecardId} onValueChange={setScorecardId}>
@@ -307,10 +311,14 @@ export function SessionSetup({ scorecards, scenarios, orgId, userId }: Props) {
       <div className="space-y-2">
         <Label>Scenario</Label>
         {scenarios.length === 0 ? (
-          <p className="text-muted-foreground text-sm">
-            No scenarios yet.{" "}
-            <a href="/scenarios/new" className="underline">Create one</a>.
-          </p>
+          <div className="rounded-lg border border-dashed p-4 space-y-1">
+            <p className="text-sm text-muted-foreground">No scenarios yet.</p>
+            <div className="flex gap-3 text-sm">
+              <a href="/scenarios" className="text-primary underline-offset-4 hover:underline">Browse templates</a>
+              <span className="text-muted-foreground">·</span>
+              <a href="/scenarios/new" className="text-primary underline-offset-4 hover:underline">Create from scratch</a>
+            </div>
+          </div>
         ) : (
           <>
             <Select value={scenarioId} onValueChange={setScenarioId}>
