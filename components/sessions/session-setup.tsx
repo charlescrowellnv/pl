@@ -10,6 +10,13 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Badge } from "@/components/ui/badge"
 import { Spinner } from "@/components/ui/spinner"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 import { AgentAudioVisualizerAura } from "@/components/agents-ui/agent-audio-visualizer-aura"
 import { createSession } from "@/app/sessions/actions"
 import type { ScenarioRawFields } from "@/lib/scenarios"
@@ -33,16 +40,41 @@ function formatDuration(seconds: number) {
 }
 
 function ScenarioPreview({ scenario }: { scenario: Scenario }) {
-  const f = scenario.raw_fields as {
-    buyer_role?: string
-    personality?: string
-    company_context?: string
-  } | null
+  const f = scenario.raw_fields as ScenarioRawFields | null
+  if (!f) return null
+
+  const rows = [
+    f.buyer_role && { label: "Buyer", value: f.buyer_role + (f.company_context ? ` at ${f.company_context}` : "") },
+    f.personality && { label: "Personality", value: f.personality },
+    f.goal && { label: "Goal", value: f.goal },
+    f.objections?.length > 0 && { label: "Objections", value: `${f.objections.length} prepared` },
+  ].filter(Boolean) as { label: string; value: string }[]
+
   return (
-    <p className="text-muted-foreground mt-1 text-xs">
-      {[f?.buyer_role, f?.personality].filter(Boolean).join(" · ")}
-      {f?.company_context ? ` — ${f.company_context}` : ""}
-    </p>
+    <div className="mt-3 rounded-lg border bg-muted/40 px-4 py-3 space-y-1.5">
+      {rows.map((r) => (
+        <div key={r.label} className="flex gap-3 text-xs">
+          <span className="text-muted-foreground w-20 shrink-0">{r.label}</span>
+          <span className="text-foreground">{r.value}</span>
+        </div>
+      ))}
+    </div>
+  )
+}
+
+function ScorecardPreview({ scorecard }: { scorecard: Scorecard }) {
+  const components = (scorecard.schema as { components?: { name: string }[] })?.components ?? []
+  if (components.length === 0) return null
+
+  return (
+    <div className="mt-3 rounded-lg border bg-muted/40 px-4 py-3 space-y-1">
+      {components.map((c, i) => (
+        <div key={i} className="flex items-center gap-2 text-xs">
+          <span className="text-muted-foreground tabular-nums">{i + 1}.</span>
+          <span>{c.name}</span>
+        </div>
+      ))}
+    </div>
   )
 }
 
@@ -253,25 +285,21 @@ export function SessionSetup({ scorecards, scenarios, orgId, userId }: Props) {
             <a href="/scorecards/new" className="underline">Create one</a>.
           </p>
         ) : (
-          <div className="space-y-2">
-            {scorecards.map((s) => (
-              <button
-                key={s.id}
-                type="button"
-                onClick={() => setScorecardId(s.id)}
-                className={`w-full rounded-lg border p-3 text-left text-sm transition-colors ${
-                  scorecardId === s.id
-                    ? "border-primary bg-primary/5"
-                    : "border-border hover:bg-accent"
-                }`}
-              >
-                <p className="font-medium">{s.name}</p>
-                <p className="text-muted-foreground text-xs">
-                  {((s.schema as { components?: unknown[] })?.components?.length ?? 0)} components
-                </p>
-              </button>
-            ))}
-          </div>
+          <>
+            <Select value={scorecardId} onValueChange={setScorecardId}>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Select a scorecard" />
+              </SelectTrigger>
+              <SelectContent>
+                {scorecards.map((s) => (
+                  <SelectItem key={s.id} value={s.id}>
+                    {s.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            {selectedScorecard && <ScorecardPreview scorecard={selectedScorecard} />}
+          </>
         )}
       </div>
 
@@ -284,23 +312,21 @@ export function SessionSetup({ scorecards, scenarios, orgId, userId }: Props) {
             <a href="/scenarios/new" className="underline">Create one</a>.
           </p>
         ) : (
-          <div className="space-y-2">
-            {scenarios.map((s) => (
-              <button
-                key={s.id}
-                type="button"
-                onClick={() => setScenarioId(s.id)}
-                className={`w-full rounded-lg border p-3 text-left transition-colors ${
-                  scenarioId === s.id
-                    ? "border-primary bg-primary/5"
-                    : "border-border hover:bg-accent"
-                }`}
-              >
-                <p className="text-sm font-medium">{s.name}</p>
-                <ScenarioPreview scenario={s} />
-              </button>
-            ))}
-          </div>
+          <>
+            <Select value={scenarioId} onValueChange={setScenarioId}>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Select a scenario" />
+              </SelectTrigger>
+              <SelectContent>
+                {scenarios.map((s) => (
+                  <SelectItem key={s.id} value={s.id}>
+                    {s.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            {selectedScenario && <ScenarioPreview scenario={selectedScenario} />}
+          </>
         )}
       </div>
 
