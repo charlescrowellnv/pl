@@ -3,6 +3,8 @@ import { Geist_Mono, Inter, JetBrains_Mono } from "next/font/google"
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
 import { cn } from "@/lib/utils"
+import { TooltipProvider } from "@/components/ui/tooltip"
+import { Toaster } from "@/components/ui/sonner"
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" })
 const jetBrainsMono = JetBrains_Mono({
@@ -24,15 +26,18 @@ export default function RootLayout({
       lang="en"
       suppressHydrationWarning
       className={cn(
-        "min-h-dvh antialiased",
+        "h-full min-h-dvh antialiased",
         fontMono.variable,
         jetBrainsMono.variable,
         "font-sans",
         inter.variable
       )}
     >
-      <body className="min-h-dvh">
-        <ThemeProvider>{children}</ThemeProvider>
+      <body className="h-full min-h-dvh">
+        <ThemeProvider>
+          <TooltipProvider>{children}</TooltipProvider>
+          <Toaster />
+        </ThemeProvider>
       </body>
     </html>
   )

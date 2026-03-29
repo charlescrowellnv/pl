@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "skills": {
+    "agent-browser": {
+      "source": "vercel-labs/agent-browser",
+      "sourceType": "github",
+      "computedHash": "0eafe0971692cf8fcecb75f955595821452a835791d315db738f89ee49063a34"
+    },
+    "shadcn": {
+      "source": "shadcn/ui",
+      "sourceType": "github",
+      "computedHash": "507f011a70e8b3ae242bdc0bb5b39fd91a1d4049a0f3c281991ccf84973d591c"
+    }
+  }
+}
