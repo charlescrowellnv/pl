@@ -33,7 +33,7 @@ export type AnyField = {
   type: string
   description: string
   arrayItemType: string
-  children: AnyField[]
+  children?: AnyField[]
 }
 
 export function addIds(fields: AnyField[]): (AnyField & { id: string })[] {
