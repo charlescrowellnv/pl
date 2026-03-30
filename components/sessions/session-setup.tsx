@@ -21,19 +21,21 @@ import { createSession } from "@/app/sessions/actions"
 import type { ScenarioRawFields } from "@/lib/scenarios"
 
 type Scorecard = { id: string; name: string; schema: unknown }
-type Scenario  = { id: string; name: string; raw_fields: unknown }
+type Scenario = { id: string; name: string; raw_fields: unknown }
 
 type Props = {
   scorecards: Scorecard[]
-  scenarios:  Scenario[]
-  orgId:      string | null
-  userId:     string
+  scenarios: Scenario[]
+  orgId: string | null
+  userId: string
 }
 
 type Phase = "pre" | "starting" | "active" | "ending"
 
 function formatDuration(seconds: number) {
-  const m = Math.floor(seconds / 60).toString().padStart(2, "0")
+  const m = Math.floor(seconds / 60)
+    .toString()
+    .padStart(2, "0")
   const s = (seconds % 60).toString().padStart(2, "0")
   return `${m}:${s}`
 }
@@ -43,17 +45,24 @@ function ScenarioPreview({ scenario }: { scenario: Scenario }) {
   if (!f) return null
 
   const rows = [
-    f.buyer_role && { label: "Buyer", value: f.buyer_role + (f.company_context ? ` at ${f.company_context}` : "") },
+    f.buyer_role && {
+      label: "Buyer",
+      value:
+        f.buyer_role + (f.company_context ? ` at ${f.company_context}` : ""),
+    },
     f.personality && { label: "Personality", value: f.personality },
     f.goal && { label: "Goal", value: f.goal },
-    f.objections?.length > 0 && { label: "Objections", value: `${f.objections.length} prepared` },
+    f.objections?.length > 0 && {
+      label: "Objections",
+      value: `${f.objections.length} prepared`,
+    },
   ].filter(Boolean) as { label: string; value: string }[]
 
   return (
-    <div className="mt-3 border px-4 py-3 space-y-1.5">
+    <div className="mt-3 space-y-1.5 border px-4 py-3">
       {rows.map((r) => (
         <div key={r.label} className="flex gap-3 text-xs">
-          <span className="text-muted-foreground w-20 shrink-0">{r.label}</span>
+          <span className="w-20 shrink-0 text-muted-foreground">{r.label}</span>
           <span className="text-foreground">{r.value}</span>
         </div>
       ))}
@@ -62,11 +71,12 @@ function ScenarioPreview({ scenario }: { scenario: Scenario }) {
 }
 
 function ScorecardPreview({ scorecard }: { scorecard: Scorecard }) {
-  const components = (scorecard.schema as { components?: { name: string }[] })?.components ?? []
+  const components =
+    (scorecard.schema as { components?: { name: string }[] })?.components ?? []
   if (components.length === 0) return null
 
   return (
-    <div className="mt-3 border px-4 py-3 space-y-1">
+    <div className="mt-3 space-y-1 border px-4 py-3">
       {components.map((c, i) => (
         <div key={i} className="flex items-center gap-2 text-xs">
           <span className="text-muted-foreground">{i + 1}.</span>
@@ -84,7 +94,7 @@ export function SessionSetup({ scorecards, scenarios, orgId, userId }: Props) {
 
   // Pre-session selections
   const [scorecardId, setScorecardId] = useState(scorecards[0]?.id ?? "")
-  const [scenarioId,  setScenarioId]  = useState(scenarios[0]?.id  ?? "")
+  const [scenarioId, setScenarioId] = useState(scenarios[0]?.id ?? "")
   const [notes, setNotes] = useState("")
 
   // Active session state
@@ -111,7 +121,9 @@ export function SessionSetup({ scorecards, scenarios, orgId, userId }: Props) {
     } else {
       if (timerRef.current) clearInterval(timerRef.current)
     }
-    return () => { if (timerRef.current) clearInterval(timerRef.current) }
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current)
+    }
   }, [phase])
 
   // ── Start session ────────────────────────────────────────────────────────
@@ -121,7 +133,12 @@ export function SessionSetup({ scorecards, scenarios, orgId, userId }: Props) {
     setPhase("starting")
 
     // 1. Create session record in DB
-    const result = await createSession({ scorecardId, scenarioId, notes, orgId })
+    const result = await createSession({
+      scorecardId,
+      scenarioId,
+      notes,
+      orgId,
+    })
     if (!result.ok) {
       setError(result.error)
       setPhase("pre")
@@ -133,13 +150,17 @@ export function SessionSetup({ scorecards, scenarios, orgId, userId }: Props) {
     try {
       await navigator.mediaDevices.getUserMedia({ audio: true })
     } catch {
-      setError("Microphone permission denied. Please allow access and try again.")
+      setError(
+        "Microphone permission denied. Please allow access and try again."
+      )
       setPhase("pre")
       return
     }
 
     // 3. Fetch signed URL (or agentId for public agents)
-    const urlRes = await fetch(`/api/elevenlabs/signed-url${orgId ? `?orgId=${orgId}` : ""}`)
+    const urlRes = await fetch(
+      `/api/elevenlabs/signed-url${orgId ? `?orgId=${orgId}` : ""}`
+    )
     if (!urlRes.ok) {
       const body = await urlRes.json()
       setError(body.error ?? "Failed to get session credentials")
@@ -159,17 +180,21 @@ export function SessionSetup({ scorecards, scenarios, orgId, userId }: Props) {
           ? { signedUrl: creds.signedUrl }
           : { agentId: creds.agentId }),
         dynamicVariables: {
-          buyer_role:              fields?.buyer_role ?? "",
-          company_context:         fields?.company_context ? `at ${fields.company_context}` : "",
-          personality:             fields?.personality ?? "",
-          objections:              (fields?.objections ?? []).map((o) => `- ${o}`).join("\n"),
-          goal:                    fields?.goal ?? "",
+          buyer_role: fields?.buyer_role ?? "",
+          company_context: fields?.company_context
+            ? `at ${fields.company_context}`
+            : "",
+          personality: fields?.personality ?? "",
+          objections: (fields?.objections ?? [])
+            .map((o) => `- ${o}`)
+            .join("\n"),
+          goal: fields?.goal ?? "",
           information_to_withhold: fields?.information_to_withhold
             ? `Do not volunteer the following unless the rep asks directly:\n${fields.information_to_withhold}`
             : "",
-          additional_notes:        fields?.additional_notes ?? "",
-          session_id:              sessionIdRef.current ?? "",
-          user_id:                 userId,
+          additional_notes: fields?.additional_notes ?? "",
+          session_id: sessionIdRef.current ?? "",
+          user_id: userId,
         },
       } as Parameters<typeof conversation.startSession>[0])
 
@@ -186,21 +211,24 @@ export function SessionSetup({ scorecards, scenarios, orgId, userId }: Props) {
   const handleEnd = useCallback(() => {
     setPhase("ending")
     conversation.endSession()
-    router.push(sessionIdRef.current ? `/sessions/${sessionIdRef.current}` : "/sessions")
+    router.push(
+      sessionIdRef.current ? `/sessions/${sessionIdRef.current}` : "/sessions"
+    )
   }, [conversation, router])
 
   // ── Visualizer state mapping ─────────────────────────────────────────────
 
   const visualizerState = ((): LiveKitAgentState => {
     if (phase === "starting") return "connecting"
-    if (phase === "active") return conversation.isSpeaking ? "speaking" : "listening"
+    if (phase === "active")
+      return conversation.isSpeaking ? "speaking" : "listening"
     return "disconnected"
   })()
 
   // ── Selected items ───────────────────────────────────────────────────────
 
   const selectedScorecard = scorecards.find((s) => s.id === scorecardId)
-  const selectedScenario  = scenarios.find((s) => s.id === scenarioId)
+  const selectedScenario = scenarios.find((s) => s.id === scenarioId)
 
   // ── Render ───────────────────────────────────────────────────────────────
 
@@ -212,23 +240,29 @@ export function SessionSetup({ scorecards, scenarios, orgId, userId }: Props) {
 
         {/* Status */}
         <div className="flex flex-col items-center gap-1">
-          <p className="font-mono text-2xl tabular-nums">{formatDuration(elapsed)}</p>
-          <p className="text-muted-foreground text-sm capitalize">
+          <p className="font-mono text-2xl tabular-nums">
+            {formatDuration(elapsed)}
+          </p>
+          <p className="text-sm text-muted-foreground capitalize">
             {phase === "ending"
               ? "Saving session…"
               : conversation.isSpeaking
-              ? "Speaking…"
-              : "Listening…"}
+                ? "Speaking…"
+                : "Listening…"}
           </p>
         </div>
 
         {/* Context badges */}
         <div className="flex gap-2">
           {selectedScorecard && (
-            <span className="text-xs font-light text-muted-foreground">{selectedScorecard.name}</span>
+            <span className="text-xs font-light text-muted-foreground">
+              {selectedScorecard.name}
+            </span>
           )}
           {selectedScenario && (
-            <span className="text-xs font-light text-muted-foreground">{selectedScenario.name}</span>
+            <span className="text-xs font-light text-muted-foreground">
+              {selectedScenario.name}
+            </span>
           )}
         </div>
 
@@ -241,9 +275,11 @@ export function SessionSetup({ scorecards, scenarios, orgId, userId }: Props) {
             onClick={() => conversation.setMuted(!conversation.isMuted)}
             disabled={phase === "ending"}
           >
-            {conversation.isMuted
-              ? <MicOffIcon className="h-5 w-5 text-destructive" />
-              : <MicIcon className="h-5 w-5" />}
+            {conversation.isMuted ? (
+              <MicOffIcon className="h-5 w-5 text-destructive" />
+            ) : (
+              <MicIcon className="h-5 w-5" />
+            )}
           </Button>
 
           <Button
@@ -253,13 +289,15 @@ export function SessionSetup({ scorecards, scenarios, orgId, userId }: Props) {
             onClick={handleEnd}
             disabled={phase === "ending"}
           >
-            {phase === "ending"
-              ? <Spinner className="h-5 w-5" />
-              : <PhoneOffIcon className="h-5 w-5" />}
+            {phase === "ending" ? (
+              <Spinner className="h-5 w-5" />
+            ) : (
+              <PhoneOffIcon className="h-5 w-5" />
+            )}
           </Button>
         </div>
 
-        {error && <p className="text-destructive text-sm">{error}</p>}
+        {error && <p className="text-sm text-destructive">{error}</p>}
       </div>
     )
   }
@@ -267,7 +305,7 @@ export function SessionSetup({ scorecards, scenarios, orgId, userId }: Props) {
   // ── Pre-session ──────────────────────────────────────────────────────────
 
   return (
-    <div className="mx-auto max-w-lg space-y-8 p-8">
+    <div className="mx-auto space-y-8 p-8">
       <div>
         <h1 className="text-2xl font-normal">New Session</h1>
         <p className="mt-1 text-sm font-light text-muted-foreground">
@@ -279,12 +317,22 @@ export function SessionSetup({ scorecards, scenarios, orgId, userId }: Props) {
       <div className="space-y-2">
         <Label className="font-normal">Scorecard</Label>
         {scorecards.length === 0 ? (
-          <div className="border border-dashed p-4 space-y-1">
+          <div className="space-y-1 border border-dashed p-4">
             <p className="text-sm text-muted-foreground">No scorecards yet.</p>
             <div className="flex gap-3 text-sm">
-              <a href="/scorecards" className="text-primary underline-offset-4 hover:underline">Browse templates</a>
+              <a
+                href="/scorecards"
+                className="text-primary underline-offset-4 hover:underline"
+              >
+                Browse templates
+              </a>
               <span className="text-muted-foreground">·</span>
-              <a href="/scorecards/new" className="text-primary underline-offset-4 hover:underline">Create from scratch</a>
+              <a
+                href="/scorecards/new"
+                className="text-primary underline-offset-4 hover:underline"
+              >
+                Create from scratch
+              </a>
             </div>
           </div>
         ) : (
@@ -301,7 +349,9 @@ export function SessionSetup({ scorecards, scenarios, orgId, userId }: Props) {
                 ))}
               </SelectContent>
             </Select>
-            {selectedScorecard && <ScorecardPreview scorecard={selectedScorecard} />}
+            {selectedScorecard && (
+              <ScorecardPreview scorecard={selectedScorecard} />
+            )}
           </>
         )}
       </div>
@@ -310,12 +360,22 @@ export function SessionSetup({ scorecards, scenarios, orgId, userId }: Props) {
       <div className="space-y-2">
         <Label className="font-normal">Scenario</Label>
         {scenarios.length === 0 ? (
-          <div className="border border-dashed p-4 space-y-1">
+          <div className="space-y-1 border border-dashed p-4">
             <p className="text-sm text-muted-foreground">No scenarios yet.</p>
             <div className="flex gap-3 text-sm">
-              <a href="/scenarios" className="text-primary underline-offset-4 hover:underline">Browse templates</a>
+              <a
+                href="/scenarios"
+                className="text-primary underline-offset-4 hover:underline"
+              >
+                Browse templates
+              </a>
               <span className="text-muted-foreground">·</span>
-              <a href="/scenarios/new" className="text-primary underline-offset-4 hover:underline">Create from scratch</a>
+              <a
+                href="/scenarios/new"
+                className="text-primary underline-offset-4 hover:underline"
+              >
+                Create from scratch
+              </a>
             </div>
           </div>
         ) : (
@@ -332,7 +392,9 @@ export function SessionSetup({ scorecards, scenarios, orgId, userId }: Props) {
                 ))}
               </SelectContent>
             </Select>
-            {selectedScenario && <ScenarioPreview scenario={selectedScenario} />}
+            {selectedScenario && (
+              <ScenarioPreview scenario={selectedScenario} />
+            )}
           </>
         )}
       </div>
@@ -341,7 +403,7 @@ export function SessionSetup({ scorecards, scenarios, orgId, userId }: Props) {
       <div className="space-y-1.5">
         <Label htmlFor="notes" className="font-normal">
           Notes
-          <span className="text-muted-foreground ml-1 text-xs">(optional)</span>
+          <span className="ml-1 text-xs text-muted-foreground">(optional)</span>
         </Label>
         <Textarea
           id="notes"
@@ -352,7 +414,7 @@ export function SessionSetup({ scorecards, scenarios, orgId, userId }: Props) {
         />
       </div>
 
-      {error && <p className="text-destructive text-sm">{error}</p>}
+      {error && <p className="text-sm text-destructive">{error}</p>}
 
       <Button
         className="w-full rounded-none font-normal"
@@ -361,7 +423,9 @@ export function SessionSetup({ scorecards, scenarios, orgId, userId }: Props) {
         disabled={phase === "starting" || !scorecardId || !scenarioId}
       >
         {phase === "starting" ? (
-          <><Spinner className="h-4 w-4" /> Starting…</>
+          <>
+            <Spinner className="h-4 w-4" /> Starting…
+          </>
         ) : (
           "Start Session"
         )}
