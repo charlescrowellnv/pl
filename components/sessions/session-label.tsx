@@ -58,7 +58,7 @@ export function SessionLabel({ sessionId, label, fallback }: Props) {
           onKeyDown={onKeyDown}
           onBlur={onBlur}
           placeholder={fallback}
-          className="text-2xl font-semibold bg-transparent border-b border-border focus:border-foreground outline-none w-full"
+          className="text-2xl font-normal bg-transparent border-b border-border focus:border-foreground outline-none w-full"
         />
         <button
           onMouseDown={(e) => { e.preventDefault(); save() }}
@@ -84,7 +84,7 @@ export function SessionLabel({ sessionId, label, fallback }: Props) {
       disabled={isPending}
       className="group flex items-center gap-2 text-left"
     >
-      <h1 className="text-2xl font-semibold">
+      <h1 className="text-2xl font-normal">
         {label ?? fallback}
       </h1>
       <PencilIcon className="h-4 w-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity shrink-0" />

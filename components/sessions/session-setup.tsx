@@ -8,7 +8,6 @@ import { MicIcon, MicOffIcon, PhoneOffIcon } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
-import { Badge } from "@/components/ui/badge"
 import { Spinner } from "@/components/ui/spinner"
 import {
   Select,
@@ -51,7 +50,7 @@ function ScenarioPreview({ scenario }: { scenario: Scenario }) {
   ].filter(Boolean) as { label: string; value: string }[]
 
   return (
-    <div className="mt-3 rounded-lg border bg-muted/40 px-4 py-3 space-y-1.5">
+    <div className="mt-3 border px-4 py-3 space-y-1.5">
       {rows.map((r) => (
         <div key={r.label} className="flex gap-3 text-xs">
           <span className="text-muted-foreground w-20 shrink-0">{r.label}</span>
@@ -67,10 +66,10 @@ function ScorecardPreview({ scorecard }: { scorecard: Scorecard }) {
   if (components.length === 0) return null
 
   return (
-    <div className="mt-3 rounded-lg border bg-muted/40 px-4 py-3 space-y-1">
+    <div className="mt-3 border px-4 py-3 space-y-1">
       {components.map((c, i) => (
         <div key={i} className="flex items-center gap-2 text-xs">
-          <span className="text-muted-foreground tabular-nums">{i + 1}.</span>
+          <span className="text-muted-foreground">{i + 1}.</span>
           <span>{c.name}</span>
         </div>
       ))}
@@ -226,10 +225,10 @@ export function SessionSetup({ scorecards, scenarios, orgId, userId }: Props) {
         {/* Context badges */}
         <div className="flex gap-2">
           {selectedScorecard && (
-            <Badge variant="secondary">{selectedScorecard.name}</Badge>
+            <span className="text-xs font-light text-muted-foreground">{selectedScorecard.name}</span>
           )}
           {selectedScenario && (
-            <Badge variant="outline">{selectedScenario.name}</Badge>
+            <span className="text-xs font-light text-muted-foreground">{selectedScenario.name}</span>
           )}
         </div>
 
@@ -270,17 +269,17 @@ export function SessionSetup({ scorecards, scenarios, orgId, userId }: Props) {
   return (
     <div className="mx-auto max-w-lg space-y-8 p-8">
       <div>
-        <h1 className="text-2xl font-semibold">New Session</h1>
-        <p className="text-muted-foreground mt-1 text-sm">
+        <h1 className="text-2xl font-normal">New Session</h1>
+        <p className="mt-1 text-sm font-light text-muted-foreground">
           Choose your scorecard and scenario, then start practicing.
         </p>
       </div>
 
       {/* Scorecard */}
       <div className="space-y-2">
-        <Label>Scorecard</Label>
+        <Label className="font-normal">Scorecard</Label>
         {scorecards.length === 0 ? (
-          <div className="rounded-lg border border-dashed p-4 space-y-1">
+          <div className="border border-dashed p-4 space-y-1">
             <p className="text-sm text-muted-foreground">No scorecards yet.</p>
             <div className="flex gap-3 text-sm">
               <a href="/scorecards" className="text-primary underline-offset-4 hover:underline">Browse templates</a>
@@ -309,9 +308,9 @@ export function SessionSetup({ scorecards, scenarios, orgId, userId }: Props) {
 
       {/* Scenario */}
       <div className="space-y-2">
-        <Label>Scenario</Label>
+        <Label className="font-normal">Scenario</Label>
         {scenarios.length === 0 ? (
-          <div className="rounded-lg border border-dashed p-4 space-y-1">
+          <div className="border border-dashed p-4 space-y-1">
             <p className="text-sm text-muted-foreground">No scenarios yet.</p>
             <div className="flex gap-3 text-sm">
               <a href="/scenarios" className="text-primary underline-offset-4 hover:underline">Browse templates</a>
@@ -340,7 +339,7 @@ export function SessionSetup({ scorecards, scenarios, orgId, userId }: Props) {
 
       {/* Notes */}
       <div className="space-y-1.5">
-        <Label htmlFor="notes">
+        <Label htmlFor="notes" className="font-normal">
           Notes
           <span className="text-muted-foreground ml-1 text-xs">(optional)</span>
         </Label>
@@ -356,7 +355,7 @@ export function SessionSetup({ scorecards, scenarios, orgId, userId }: Props) {
       {error && <p className="text-destructive text-sm">{error}</p>}
 
       <Button
-        className="w-full"
+        className="w-full rounded-none font-normal"
         size="lg"
         onClick={handleStart}
         disabled={phase === "starting" || !scorecardId || !scenarioId}

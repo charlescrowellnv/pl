@@ -11,8 +11,8 @@ export default async function TeamPage() {
 
   return (
     <div className="p-8">
-      <h1 className="text-2xl font-semibold">Team</h1>
-      <p className="text-muted-foreground mt-1 text-sm">
+      <h1 className="text-2xl font-normal">Team</h1>
+      <p className="text-muted-foreground mt-1 text-sm font-light">
         Manage members, roles, and org-level settings.
       </p>
     </div>

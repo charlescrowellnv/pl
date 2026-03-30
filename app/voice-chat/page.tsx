@@ -84,7 +84,7 @@ export default function Page() {
         <AgentAudioVisualizerAura size="lg" state={visualizerState} />
 
         <div className="flex flex-col items-center gap-2">
-          <h2 className="text-xl font-semibold">{DEFAULT_AGENT.name}</h2>
+          <h2 className="text-xl font-normal">{DEFAULT_AGENT.name}</h2>
           <AnimatePresence mode="wait">
             {errorMessage ? (
               <motion.p

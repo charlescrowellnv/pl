@@ -2,14 +2,25 @@
 
 import { useState, useTransition } from "react"
 import { useRouter } from "next/navigation"
-import { PlusIcon, Trash2Icon, WandSparklesIcon, GripVerticalIcon, XIcon } from "lucide-react"
+import {
+  PlusIcon,
+  Trash2Icon,
+  WandSparklesIcon,
+  GripVerticalIcon,
+  XIcon,
+} from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Badge } from "@/components/ui/badge"
 import { Spinner } from "@/components/ui/spinner"
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
 import { cn } from "@/lib/utils"
 import {
   saveScorecard,
@@ -66,7 +77,9 @@ export function ScorecardBuilder({
   // ── Component helpers ──────────────────────────────────────────────────────
 
   function updateComponent(id: string, patch: Partial<ComponentDraft>) {
-    setComponents((prev) => prev.map((c) => (c.id === id ? { ...c, ...patch } : c)))
+    setComponents((prev) =>
+      prev.map((c) => (c.id === id ? { ...c, ...patch } : c))
+    )
   }
 
   function removeComponent(id: string) {
@@ -102,7 +115,12 @@ export function ScorecardBuilder({
     setComponents((prev) =>
       prev.map((c) =>
         c.id === compId
-          ? { ...c, rubric_checkpoints: c.rubric_checkpoints.filter((_, i) => i !== index) }
+          ? {
+              ...c,
+              rubric_checkpoints: c.rubric_checkpoints.filter(
+                (_, i) => i !== index
+              ),
+            }
           : c
       )
     )
@@ -134,7 +152,9 @@ export function ScorecardBuilder({
       setGenerateOpen(false)
       setGenerateDesc("")
     } catch (err) {
-      setGenerateError(err instanceof Error ? err.message : "Something went wrong")
+      setGenerateError(
+        err instanceof Error ? err.message : "Something went wrong"
+      )
     } finally {
       setGenerating(false)
     }
@@ -163,19 +183,21 @@ export function ScorecardBuilder({
   // ── Render ────────────────────────────────────────────────────────────────
 
   return (
-    <div className="mx-auto max-w-2xl space-y-8 p-8">
+    <div className="flex flex-col">
+    <div className="mx-auto w-full space-y-8 p-8 pb-4">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-semibold">
+          <h1 className="text-2xl font-normal">
             {editId ? "Edit Scorecard" : "New Scorecard"}
           </h1>
-          <p className="text-muted-foreground mt-1 text-sm">
+          <p className="mt-1 text-sm font-light text-muted-foreground">
             Define the components and rubric checkpoints Claude will evaluate.
           </p>
         </div>
         <Button
           variant="outline"
+          className="rounded-none font-normal"
           onClick={() => setGenerateOpen(true)}
         >
           <WandSparklesIcon className="h-4 w-4" />
@@ -185,7 +207,7 @@ export function ScorecardBuilder({
 
       {/* Name */}
       <div className="space-y-1.5">
-        <Label htmlFor="scorecard-name">Name</Label>
+        <Label htmlFor="scorecard-name" className="font-normal">Name</Label>
         <Input
           id="scorecard-name"
           value={name}
@@ -203,7 +225,7 @@ export function ScorecardBuilder({
               type="button"
               onClick={() => setOrgId(null)}
               className={cn(
-                "rounded-md border px-3 py-1.5 text-sm transition-colors",
+                "rounded-none border px-3 py-1.5 text-sm font-light transition-colors",
                 orgId === null
                   ? "border-primary bg-primary text-primary-foreground"
                   : "border-border hover:bg-accent"
@@ -227,7 +249,7 @@ export function ScorecardBuilder({
               </button>
             ))}
           </div>
-          <p className="text-muted-foreground text-xs">
+          <p className="text-xs text-muted-foreground">
             {orgId
               ? "Shared with all team members. Only admins can edit."
               : "Only visible to you."}
@@ -237,17 +259,16 @@ export function ScorecardBuilder({
 
       {/* Components */}
       <div className="space-y-4">
-        <Label>Components</Label>
+        <Label className="font-normal">Components</Label>
         {components.map((comp, compIdx) => (
-          <div
-            key={comp.id}
-            className="border-border rounded-lg border p-4 space-y-3"
-          >
+          <div key={comp.id} className="space-y-4 border p-5">
             <div className="flex items-center gap-2">
-              <GripVerticalIcon className="text-muted-foreground h-4 w-4 shrink-0" />
+              <GripVerticalIcon className="h-4 w-4 shrink-0 text-muted-foreground" />
               <Input
                 value={comp.name}
-                onChange={(e) => updateComponent(comp.id, { name: e.target.value })}
+                onChange={(e) =>
+                  updateComponent(comp.id, { name: e.target.value })
+                }
                 placeholder={`Component ${compIdx + 1} name, e.g. "Opening"`}
                 className="flex-1"
               />
@@ -255,7 +276,7 @@ export function ScorecardBuilder({
                 variant="ghost"
                 size="icon"
                 onClick={() => removeComponent(comp.id)}
-                className="text-muted-foreground hover:text-destructive shrink-0"
+                className="shrink-0 text-muted-foreground hover:text-destructive"
                 disabled={components.length === 1}
               >
                 <Trash2Icon className="h-4 w-4" />
@@ -264,17 +285,19 @@ export function ScorecardBuilder({
 
             {/* Rubric checkpoints */}
             <div className="space-y-2 pl-6">
-              <p className="text-muted-foreground text-xs font-medium uppercase tracking-wide">
+              <p className="text-xs font-light tracking-[0.2em] text-muted-foreground uppercase">
                 Rubric Checkpoints
               </p>
               {comp.rubric_checkpoints.map((cp, cpIdx) => (
                 <div key={cpIdx} className="flex items-center gap-2">
-                  <span className="text-muted-foreground text-xs w-4 shrink-0 text-right">
+                  <span className="w-4 shrink-0 text-right text-xs text-muted-foreground">
                     {cpIdx + 1}.
                   </span>
                   <Input
                     value={cp}
-                    onChange={(e) => updateCheckpoint(comp.id, cpIdx, e.target.value)}
+                    onChange={(e) =>
+                      updateCheckpoint(comp.id, cpIdx, e.target.value)
+                    }
                     placeholder='e.g. "Did the rep introduce themselves clearly?"'
                     className="flex-1 text-sm"
                     onKeyDown={(e) => {
@@ -288,7 +311,7 @@ export function ScorecardBuilder({
                     variant="ghost"
                     size="icon"
                     onClick={() => removeCheckpoint(comp.id, cpIdx)}
-                    className="text-muted-foreground hover:text-destructive shrink-0 h-8 w-8"
+                    className="h-8 w-8 shrink-0 text-muted-foreground hover:text-destructive"
                     disabled={comp.rubric_checkpoints.length === 1}
                   >
                     <XIcon className="h-3.5 w-3.5" />
@@ -299,7 +322,7 @@ export function ScorecardBuilder({
                 variant="ghost"
                 size="sm"
                 onClick={() => addCheckpoint(comp.id)}
-                className="text-muted-foreground h-7 text-xs"
+                className="h-7 text-xs text-muted-foreground"
               >
                 <PlusIcon className="h-3 w-3" />
                 Add checkpoint
@@ -311,26 +334,10 @@ export function ScorecardBuilder({
         <Button
           variant="outline"
           onClick={() => setComponents((prev) => [...prev, newComponent()])}
-          className="w-full"
+          className="w-full rounded-none font-normal"
         >
           <PlusIcon className="h-4 w-4" />
           Add component
-        </Button>
-      </div>
-
-      {/* Error */}
-      {error && (
-        <p className="text-destructive text-sm">{error.message}</p>
-      )}
-
-      {/* Actions */}
-      <div className="flex justify-end gap-2 border-t pt-4">
-        <Button variant="outline" onClick={() => router.push("/scorecards")} disabled={pending}>
-          Cancel
-        </Button>
-        <Button onClick={handleSave} disabled={pending}>
-          {pending ? <Spinner className="h-4 w-4" /> : null}
-          {editId ? "Save changes" : "Create scorecard"}
         </Button>
       </div>
 
@@ -342,35 +349,77 @@ export function ScorecardBuilder({
           </DialogHeader>
           <div className="space-y-4">
             <div className="space-y-1.5">
-              <Label>Describe the call type or skill you want to evaluate</Label>
+              <Label>
+                Describe the call type or skill you want to evaluate
+              </Label>
               <Textarea
                 value={generateDesc}
                 onChange={(e) => setGenerateDesc(e.target.value)}
                 placeholder="e.g. A scorecard for evaluating cold calls — covering the hook, value prop, objection handling, and booking a next step."
                 className="min-h-28 resize-none text-sm"
                 onKeyDown={(e) => {
-                  if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) handleGenerate()
+                  if (e.key === "Enter" && (e.metaKey || e.ctrlKey))
+                    handleGenerate()
                 }}
               />
               {generateError && (
-                <p className="text-destructive text-sm">{generateError}</p>
+                <p className="text-sm text-destructive">{generateError}</p>
               )}
             </div>
             <div className="flex justify-end gap-2">
-              <Button variant="outline" onClick={() => setGenerateOpen(false)}>
+              <Button
+                variant="outline"
+                className="rounded-none font-normal"
+                onClick={() => setGenerateOpen(false)}
+              >
                 Cancel
               </Button>
               <Button
+                className="rounded-none font-normal"
                 onClick={handleGenerate}
                 disabled={!generateDesc.trim() || generating}
               >
-                {generating ? <Spinner className="h-4 w-4" /> : <WandSparklesIcon className="h-4 w-4" />}
+                {generating ? (
+                  <Spinner className="h-4 w-4" />
+                ) : (
+                  <WandSparklesIcon className="h-4 w-4" />
+                )}
                 {generating ? "Generating…" : "Generate"}
               </Button>
             </div>
           </div>
         </DialogContent>
       </Dialog>
+    </div>
+
+      {/* Sticky footer */}
+      <div className="sticky bottom-0 border-t bg-background">
+        <div className="mx-auto w-full px-8 h-14 flex items-center justify-between gap-2">
+          {error ? (
+            <p className="text-sm text-destructive">{error.message}</p>
+          ) : (
+            <span />
+          )}
+          <div className="flex gap-2">
+            <Button
+              variant="outline"
+              className="rounded-none font-normal"
+              onClick={() => router.push("/scorecards")}
+              disabled={pending}
+            >
+              Cancel
+            </Button>
+            <Button
+              className="rounded-none font-normal"
+              onClick={handleSave}
+              disabled={pending}
+            >
+              {pending ? <Spinner className="h-4 w-4" /> : null}
+              {editId ? "Save changes" : "Create scorecard"}
+            </Button>
+          </div>
+        </div>
+      </div>
     </div>
   )
 }

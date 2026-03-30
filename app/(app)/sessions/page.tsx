@@ -1,9 +1,8 @@
 import Link from "next/link"
-import { PlusIcon } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { Item, ItemGroup, ItemContent, ItemTitle, ItemDescription, ItemActions } from "@/components/ui/item"
 import { getOnboardedUser } from "@/lib/supabase/get-user"
 import { createClient } from "@/lib/supabase/server"
-import { Badge } from "@/components/ui/badge"
 
 export default async function SessionsPage() {
   const user = await getOnboardedUser()
@@ -26,29 +25,26 @@ export default async function SessionsPage() {
     .limit(50)
 
   return (
-    <div className="p-8 space-y-6">
+    <div className="space-y-6 p-8">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-semibold">Sessions</h1>
-          <p className="text-muted-foreground mt-1 text-sm">Your practice history.</p>
+          <h1 className="text-2xl font-normal">Sessions</h1>
+          <p className="mt-1 text-sm text-muted-foreground font-light">Your practice history.</p>
         </div>
-        <Button asChild>
-          <Link href="/sessions/new">
-            <PlusIcon className="h-4 w-4" />
-            New Session
-          </Link>
+        <Button asChild variant="outline" className="rounded-none font-normal">
+          <Link href="/sessions/new">New Session</Link>
         </Button>
       </div>
 
       {(sessions ?? []).length === 0 ? (
-        <div className="text-muted-foreground flex flex-col items-center justify-center gap-3 py-24 text-sm">
+        <div className="flex flex-col items-center justify-center gap-3 py-24 text-sm text-muted-foreground">
           <p>No sessions yet.</p>
-          <Button asChild variant="outline">
+          <Button asChild variant="outline" className="rounded-none font-normal">
             <Link href="/sessions/new">Start your first session</Link>
           </Button>
         </div>
       ) : (
-        <div className="space-y-2">
+        <ItemGroup className="gap-0 divide-y divide-border">
           {(sessions ?? []).map((s) => {
             const scenario  = s.scenarios as { name: string } | null
             const scorecard = s.scorecards as { name: string } | null
@@ -60,41 +56,47 @@ export default async function SessionsPage() {
             })
 
             return (
-              <Link
+              <Item
                 key={s.id}
-                href={`/sessions/${s.id}`}
-                className="border-border hover:bg-accent flex items-center justify-between rounded-lg border p-4 transition-colors"
+                asChild
+                variant="default"
+                className="rounded-none border-0 py-3.5 hover:bg-accent/40 transition-colors"
               >
-                <div className="space-y-1 min-w-0">
-                  <p className="font-medium truncate">
-                    {s.label ?? `Session — ${date}`}
-                  </p>
-                  <p className="text-muted-foreground text-xs">
-                    {[scenario?.name, scorecard?.name].filter(Boolean).join(" · ")}
-                    {duration ? ` · ${duration}` : ""}
-                  </p>
-                </div>
-                <StatusBadge status={s.status} />
-              </Link>
+                <Link href={`/sessions/${s.id}`}>
+                  <ItemContent>
+                    <ItemTitle className="font-normal">
+                      {s.label ?? `Session — ${date}`}
+                    </ItemTitle>
+                    <ItemDescription className="font-light">
+                      {[scenario?.name, scorecard?.name].filter(Boolean).join(" · ")}
+                      {duration ? ` · ${duration}` : ""}
+                    </ItemDescription>
+                  </ItemContent>
+                  <ItemActions>
+                    <StatusDot status={s.status} />
+                  </ItemActions>
+                </Link>
+              </Item>
             )
           })}
-        </div>
+        </ItemGroup>
       )}
     </div>
   )
 }
 
-function StatusBadge({ status }: { status: string }) {
-  const map: Record<string, { label: string; className: string }> = {
-    recording: { label: "Recording", className: "bg-blue-500/10 text-blue-600" },
-    ready:     { label: "Ready",     className: "bg-purple-500/10 text-purple-600" },
-    scoring:   { label: "Scoring…",  className: "bg-yellow-500/10 text-yellow-600" },
-    scored:    { label: "Scored",    className: "bg-green-500/10 text-green-600" },
-    error:     { label: "Error",     className: "bg-red-500/10 text-red-600" },
+function StatusDot({ status }: { status: string }) {
+  const map: Record<string, { label: string; color: string }> = {
+    recording: { label: "Recording", color: "bg-blue-500" },
+    ready:     { label: "Ready",     color: "bg-purple-500" },
+    scoring:   { label: "Scoring…",  color: "bg-yellow-500" },
+    scored:    { label: "Scored",    color: "bg-green-500" },
+    error:     { label: "Error",     color: "bg-red-500" },
   }
-  const config = map[status] ?? { label: status, className: "" }
+  const config = map[status] ?? { label: status, color: "bg-muted-foreground" }
   return (
-    <span className={`shrink-0 rounded-full px-2.5 py-0.5 text-xs font-medium ${config.className}`}>
+    <span className="flex shrink-0 items-center gap-1.5 text-xs font-light text-muted-foreground">
+      <span className={`h-1.5 w-1.5 shrink-0 rounded-full ${config.color}`} />
       {config.label}
     </span>
   )

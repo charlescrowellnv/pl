@@ -23,14 +23,14 @@ export default function VoiceChatLayout({}: {
       <div className="flex flex-col items-center justify-center gap-2">
         <p className="">
           PracticeLab helps you sharpen your ability to{" "}
-          <span className="font-bold">think on your feet</span> and{" "}
-          <span className="font-bold">speak with confidence</span> — so
+          <span className="font-normal">think on your feet</span> and{" "}
+          <span className="font-normal">speak with confidence</span> — so
           you&apos;re never fumbling for words, whether that&apos;s with
           clients, colleagues, or in public.
         </p>
         <p className="">
           Available hosted or self-hosted (BYOK: ElevenLabs + Anthropic). Every
-          session generates a <span className="font-bold">scorecard</span> so
+          session generates a <span className="font-normal">scorecard</span> so
           you can track your progress.
         </p>
       </div>

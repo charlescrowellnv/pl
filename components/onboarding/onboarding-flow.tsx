@@ -68,7 +68,7 @@ function PathSelection({ onSelect }: { onSelect: (path: Path) => void }) {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-semibold">Welcome to PracticeLab</h1>
+        <h1 className="text-2xl font-normal">Welcome to PracticeLab</h1>
         <p className="text-muted-foreground mt-1 text-sm">
           How would you like to get started?
         </p>
@@ -143,7 +143,7 @@ function SoloSetup({ onBack }: { onBack: () => void }) {
           <ArrowLeft className="h-3.5 w-3.5" />
           Back
         </button>
-        <h1 className="text-2xl font-semibold">Connect your ElevenLabs agent</h1>
+        <h1 className="text-2xl font-normal">Connect your ElevenLabs agent</h1>
         <p className="text-muted-foreground mt-1 text-sm">
           You&apos;ll need an ElevenLabs account with a Conversational AI agent set up.
         </p>
@@ -218,7 +218,7 @@ function OrgSetup({ onBack }: { onBack: () => void }) {
           <ArrowLeft className="h-3.5 w-3.5" />
           Back
         </button>
-        <h1 className="text-2xl font-semibold">Create your team</h1>
+        <h1 className="text-2xl font-normal">Create your team</h1>
         <p className="text-muted-foreground mt-1 text-sm">
           Your team&apos;s ElevenLabs agent will be shared with all members.
         </p>
